@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Exports;
+
+use App\Models\Order;
+use App\Models\Order_item;
+use DateTime;
+use Illuminate\Contracts\Support\Responsable;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\FromView;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+
+
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeImport;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Events\BeforeSheet;
+
+class OrderExport3 implements FromView, ShouldAutoSize,  Responsable, WithEvents
+{
+    use Exportable;
+
+    public $date1 = null; 
+    public $date2 = null;
+
+    public function __construct($date1, $date2){
+        $this->date1 = $date1;
+        $this->date2 = $date2;
+    }
+
+
+    public function view():view
+    {
+        if($this->date1){
+            $start  = date('Y-m-d',strtotime(str_replace('-','/',$this->date1)));
+            $end   = date('Y-m-d',strtotime(str_replace('-','/',$this->date2)));
+            $orders = Order::whereBetween('order_date', [request()->start_date, request()->end_date])->where('order_status_id','7')->orderBy('order_date', 'DESC')->get();
+        }else{
+            $orders= Order::where('order_status_id','7')->orderBy('order_date', 'DESC')->get();
+        }
+        
+        return view('common.export.deliverd-order-info', ['orders'=>$orders]);
+    }
+
+
+
+    public function registerEvents(): array
+    {
+        return [
+            // Array callable, refering to a static method.
+            AfterSheet::class => function(afterSheet $event){
+                $event->sheet->getStyle('A1:X1')->applyFromArray([
+                    'font' =>[
+                        'bold'=>true,
+                    ],
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+                        'rotation' => 90,
+                        'startColor' => [
+                            'argb' => 'fff',
+                        ],
+                        'endColor' => [
+                            'argb' => 'ffc107',
+                        ],
+                    ],
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                            'color' => ['argb' => 'ffc107'],
+                        ],
+                    ],
+                ]);
+            }
+                        
+        ];
+    }
+    
+}

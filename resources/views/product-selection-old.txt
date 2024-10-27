@@ -1,0 +1,73 @@
+{{-- <table class="variations" cellspacing="0">
+                                    <tbody>
+                                        <?php $variation_ids = $product->product_variation_options()->select('variation_id')->distinct('variation_id')->get();?>
+                                        @foreach ($variation_ids as $pvo)
+                                            <?php $options = $product->product_variation_options()->where(['variation_id'=>$pvo->variation_id,'status'=>'1'])->select('variation_option_id')->get(); ?>
+                                            <tr>
+                                                <td class="label"><label for="pa_color">{{ $pvo->variation->title }}: </label><span class="selected-variation-item-name" data-default=""></span></td>
+                                                <td class="value woo-variation-items-wrapper">
+                                                    <select name="variants[]" style="display:block">
+                                                        <option value="">Choose an option</option>
+                                                        @foreach ($options as $option)
+                                                            <option class="option{{ $option->variation_option_id }}" value="{{ $option->variation_option_id }}" class="attached enabled">{{ $option->variation_option->title }}</option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <ul role="radiogroup" aria-label="size" class="variable-items-wrapper button-variable-wrapper">
+                                                        @foreach ($options as $option)
+                                                            @if(strpos(strtolower($pvo->variation->title), 'color') !== false)
+                                                                <li aria-checked="false" data-wvstooltip="{{ $option->variation_option->title }}" class="variable-item color-variable-item button-variable-item" title="{{ $option->variation_option->title }}" data-title="{{ $option->variation_option->title }}" data-value="{{ $option->variation_option_id }}" role="radio" tabindex="0">
+                                                                    <div class="variable-item-contents">
+                                                                        <span class="variable-item-span variable-item-span-color" style="background-color:{{ $option->variation_option->code }};"></span>
+                                                                    </div>
+                                                                </li>
+                                                            @else
+                                                                <li aria-checked="false" data-wvstooltip="{{ $option->variation_option->title }}" class="variable-item button-variable-item " title="{{ $option->variation_option->title }}" data-title="{{ $option->variation_option->title }}" data-value="{{ $option->variation_option_id }}" role="radio" tabindex="0">
+                                                                    <div class="variable-item-contents"><span class="variable-item-span variable-item-span-button">{{ $option->variation_option->title }}</span></div>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table> --}}
+
+                                {{-- <?php $product_combination = $product->product_combinations()->select('id','combination_string','qty')->get();?>
+
+                                <ul class="list-group">
+                                    @foreach ($product_combination as $comb)
+                                        <label for="comb{{ $comb->id }}">
+                                            <li class="list-group-item">
+                                            <input id="comb{{ $comb->id }}" type="radio" name="combination_id" value="{{ $comb->id }}" style="display: block;width: 15px;height: 15px;float: left;margin-top: 7px;">
+                                            @foreach (explode('~',$comb->combination_string) as $string)
+                                                <?php $option = \App\Models\Variation_option::where('origin',$string)->first();?>
+                                                {{ $option->variation->title.': '.$string }}
+
+                                            @endforeach </li>
+                                        </label>
+                                    @endforeach
+                                </ul> --}}
+
+
+
+from modal popup
+
+{{-- <ul> <?php $combinations = $product->product_combinations()->get();//for specific combination for individual product ?>
+                                    @foreach ($product->product_variation_options()->select('variation_id')->distinct('variation_id')->get() as $pvo)
+
+                                    <li style="width:32%;padding:1%; float:left">  {{ $pvo->variation->title }}
+                                        <?php $variations = \App\Models\Variation::where('id',$pvo->variation_id)->get();?>
+                                        @foreach ($variations as $v)
+                                            <select class="variants" name="variants" style="width:100%;float:left;height:30px;padding-left: 5px;">
+                                                <option value="">Choose</option>
+                                                @foreach ($v->variation_options()->get() as $vo)
+                                                    <?php $check = \App\Models\Product_variation_option::where(['product_id'=>$product->id, 'variation_id'=>$v->id, 'variation_option_id'=>$vo->id]);?>
+                                                    @if($check->count() >0) <option value="{{ $vo->id}}" data-id="{{ $v->id }}">{{ $vo->title }}</option> @endif
+                                                @endforeach
+                                            </select>
+                                        @endforeach
+                                    </li>
+                                    @endforeach
+                                </ul> --}}
