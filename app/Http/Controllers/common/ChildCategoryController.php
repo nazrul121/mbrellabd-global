@@ -71,7 +71,7 @@ class ChildCategoryController extends Controller{
     public function main2sub_categories(Season $season, Group $group){
         $seasonCountry = $season->countries()->select('country_id')->distinct()->pluck('country_id')->toArray();
         $innerIds = \DB::table('country_inner_group')->whereIn('country_id',$seasonCountry)->select('inner_group_id')->distinct()->pluck('inner_group_id')->toArray();
-        $inner = Inner_group::whereIn('id',$innerIds)->where('group_id',$group->id)->get();
+        $inner = Inner_group::whereIn('id',$innerIds)->where(['group_id'=>$group->id, 'status'=>'1'])->get();
         return $inner;
     }
 

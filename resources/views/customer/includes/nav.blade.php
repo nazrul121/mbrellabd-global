@@ -7,7 +7,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('customer.dashbaord',app()->getLocale()) }}">Dashbaord</a>
+            <a class="nav-link" href="{{ route('customer.dashboard',app()->getLocale()) }}">Dashboard</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('customer.orders',app()->getLocale()) }}">My Orders</a>

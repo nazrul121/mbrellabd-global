@@ -37,8 +37,14 @@ if(request()->get('child_category_id')) $url = route('common.child-category-prod
         $('.productTbl').on('click','.delete', function(){
             var id = $(this).attr('id');
             if(confirm('Are you sure to remove the item??')){
-                $.get(url+'/common/ad/promotion/remove-product/'+id,  function (data, textStatus, jqXHR) {  // success callback
-                    $('.productTbl').DataTable().ajax.reload();
+                $.get(url+'/common/ad/promotion/remove-product/'+id,  function (data, textStatus, jqXHR) { 
+                    if(data.alert){
+                        $('.deleteResponse').html("<b class='text-danger'>"+data.alert+'</b>');
+                    }
+                    if(data.success){
+                        $('.deleteResponse').html("<b class='text-success'>"+data.success+'</b>');
+                        $('.productTbl').DataTable().ajax.reload();
+                    }
                 });
             }
 
@@ -66,9 +72,14 @@ if(request()->get('child_category_id')) $url = route('common.child-category-prod
 
             if (confirmation) {
                 $.get(url+'/common/ad/promotion/remove-products/'+ids,  function (data, textStatus, jqXHR) { 
-                    $('.deleteResponse').html(data.success);
-                    console.log(data);
-                    $('.productTbl').DataTable().ajax.reload();
+                    if(data.alert){
+                        $('.deleteResponse').html("<b class='text-danger'>"+data.alert+'</b>');
+                    }
+                    if(data.success){
+                        $('.deleteResponse').html("<b class='text-success'>"+data.success+'</b>');
+                        $('.productTbl').DataTable().ajax.reload();
+                    }
+                    
                 });
             }
             

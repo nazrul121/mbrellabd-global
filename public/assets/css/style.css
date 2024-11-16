@@ -1377,10 +1377,32 @@ button,
   display: block;
   max-width: -webkit-fit-content;
   max-width: -moz-fit-content;
-  max-width: fit-content; }
-  .badge-label + .badge-label {
-    margin-top: 8px;
-    background-color: var(--secondary-color); }
+  max-width: fit-content; 
+}
+.badge-label + .badge-label {
+  margin-top: 8px;
+  background-color: var(--secondary-color); 
+}
+
+.badge-labelNew {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+  text-align: center;
+  padding: 4px 12px;
+  letter-spacing: 0.03em;
+  color: #ffffff;
+  background-color: #e29d1b;
+  display: block;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  /* max-width: fit-content; */
+  transform: rotate(270deg);
+  position: relative;
+  top: 33px;
+  left: -43px;
+}
+
 
 .tab-link {
   font-weight: 500;

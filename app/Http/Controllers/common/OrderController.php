@@ -261,8 +261,8 @@ class OrderController extends Controller
 
     private function orders($datatable, $order_status){
         return $datatable
-        ->addIndexColumn()
-        ->editColumn('checkbox', function ($row) use ($order_status) {
+        // ->addIndexColumn()
+        ->editColumn('id', function ($row) use ($order_status) {
             if($order_status->id=='3'){
                 return ' <input type="checkbox" class="selectedOrder" name="order_ids[]" style="width:25px;height:25px" value="'. $row->id.'">';
             } else return $row->id;
@@ -383,7 +383,7 @@ class OrderController extends Controller
             return $row->ref;
         })
 
-        ->rawColumns(['checkbox','transaction_id','product_info','customer_info','ref','order_info'])->make(true);
+        ->rawColumns(['id','transaction_id','product_info','customer_info','ref','order_info'])->make(true);
     }
 
 
@@ -470,6 +470,7 @@ class OrderController extends Controller
         
         return view('common.order.sslcommerz-order', compact('orderPayments', 'statuses'));
     }
+    
 
     function sslcommerz_excel(Request $request, Excel $excel){
         // return Excel::download(new OrderExport($request->start_date, $request->end_date), 'order-'.date('m-Y').'.xlsx');

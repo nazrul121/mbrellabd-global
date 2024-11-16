@@ -44,9 +44,7 @@
                                 <?php $__currentLoopData = $feeds; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feed): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php if($feed->type=='video'): ?>
                                         <div class="instagram-card" style="position:relative">
-                                            <a href="<?php echo e($feed->permalink); ?>">
-                                                <iframe id="myIframe" width="100%" style="position:absolute;height:228px;background: #e09d1b;" height="100%" src="<?php echo e($feed->url); ?>" frameborder="0" autoplay="false"></iframe>
-                                            </a>
+                                            <iframe id="myIframe" width="100%" height="228px"  style="position:absolute;background: #e09d1b;" src="<?php echo e($feed->url); ?>?autoplay=0"  frameborder="0"></iframe>                                        
                                         </div>
                                     <?php else: ?>
                                     <div class="instagram-card">

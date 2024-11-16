@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([ 'prefix' => '{locale?}/customer','middleware'=>['customer','auth'],'namespace'=>'customer'],function() {
-    Route::get('dashboard', [App\Http\Controllers\customer\DashboardController::class,'index'])->name('customer.dashbaord');
+    Route::get('dashboard', [App\Http\Controllers\customer\DashboardController::class,'index'])->name('customer.dashboard');
     Route::get('profile', [App\Http\Controllers\customer\DashboardController::class,'index'])->name('customer.profile');
     Route::get('account-info', [App\Http\Controllers\customer\DashboardController::class,'my_info'])->name('customer.account-info');
     Route::post('account-info/save', [App\Http\Controllers\customer\DashboardController::class,'update'])->name('customer.update.account');

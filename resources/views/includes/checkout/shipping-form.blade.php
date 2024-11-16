@@ -168,7 +168,7 @@
                     <select class="form-select" name="shipping_division">
                         <option value="">Choose Region</option>
                         @foreach (\DB::table('divisions')->where(['country_id'=>session('user_currency')->id, 'status'=>'1'])->get() as $div)
-                            <option value="{{ $div->id.'|'.$div->name }}">{{ $div->name }}</option>
+                            <option {{ old('shipping_division') == $div->id.'|'.$div->name ? 'selected' : '' }} value="{{ $div->id.'|'.$div->name }}">{{ $div->name }}</option>
                         @endforeach
                     </select>
                     <span class="text-danger">{{ $errors->first('shipping_division')}}</span>

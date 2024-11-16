@@ -46,7 +46,7 @@ class SeasonController extends Controller
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
             // dd($min.' = '.$max);
 
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('season-products',compact('season','products','meta_data'));
         }
@@ -104,7 +104,7 @@ class SeasonController extends Controller
             ->distinct('product_id')->get()->toArray();
         }
 
-        $products = Product::where('status','1')->whereIn('id',$product_ids)->orderBy($field,$sortBy)->select(['id','title','slug','thumbs','sale_price'])->paginate(20);
+        $products = Product::where('status','1')->whereIn('id',$product_ids)->orderBy($field,$sortBy)->select(['id','title','slug','thumbs','sale_price','newArrival'])->paginate(20);
 
         return view('season-products',compact('season','products'));
     }
@@ -136,7 +136,7 @@ class SeasonController extends Controller
             $min = $this->min_price( trim(explode('-',$request->price)[0]) );
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
 
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('season-products',compact('season','products','meta_data'));
         }
@@ -186,7 +186,7 @@ class SeasonController extends Controller
             $product_ids = Product_season::where(['season_id'=>$season->id,'group_id'=>$group_id,'status'=>'1'])->select('product_id')->distinct('product_id')->get()->toArray();
         }
         // dd($product_ids);
-        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
+        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
         return view('season-products',compact('season','products','meta_data'));
     }
 
@@ -218,7 +218,7 @@ class SeasonController extends Controller
             $min = $this->min_price( trim(explode('-',$request->price)[0]) );
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
             // dd('three in price ');
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('season-products',compact('season','products','meta_data'));
         }
@@ -299,7 +299,7 @@ class SeasonController extends Controller
             $min = $this->min_price( trim(explode('-',$request->price)[0]) );
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
             // dd('three in price ');
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('season-products',compact('season','products','meta_data'));
         }

@@ -24,6 +24,9 @@ use App\Models\Slider;
 use App\Models\Order;
 use App\Models\Social_media;
 use App\Models\Customer;
+use App\Models\Product_promotion;
+use App\Models\Order_item;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Session;
@@ -70,7 +73,56 @@ class DashboardController extends Controller
 
         //$this->updateCustomerPhoneFormUserTable();
         //$this->updateOrderPhoneIsNull();
+        // $this->reArrangeOrderItemPromotion();
         return view('common.includes.dashboard');
+    }
+
+
+    function reArrangeOrderItemPromotion(){
+        echo Order_item::count().'<br/>';
+        $order_items = Order_item::all();
+        // dd($order_items);
+       
+        $orderNum = 1;
+        foreach($order_items as $row){
+            $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+            if($row->promotion_id==null && $disPercent>0 && $row->order->order_status_id==7){
+                // $nearestOffer = Product_promotion::where('discount_in','percent')->orderByRaw('ABS(discount_value - ?) ASC', [$disPercent])->first();
+                $nearestOffer = Product_promotion::where('discount_in', 'percent')
+                ->whereDate('created_at', '<=', $row->order->order_date) // Filter by date
+                ->orderByRaw('ABS(discount_value - ?) ASC', [$disPercent]) // Nearest discount
+                ->first();
+    
+                if($nearestOffer->discount_value==$disPercent){
+                    $color = 'green';
+                }else $color = 'red';
+
+                echo '<p style="color:'.$color.'">'.$orderNum.'. no promo, but '.$disPercent.'% dis. order-item id: '.$row->id.', 
+                order-date='.$row->order->order_date.' <a target="_blank" href="'.route('print-invoice',$row->order->transaction_id).'">Invoice</a>, 
+                Nearist: '.$nearestOffer->promotion_id.', '.$nearestOffer->discount_value.'% ,promo-date='.$nearestOffer->promotion->created_at.' </p>';
+                $orderNum++;
+
+            }
+            
+            // if($row->promotion_id!=null){
+            //     // echo $disPercent.'% = '.$row->promotion_id.'<br/>';
+            //     // echo 'promo ID: '.$row->promotion_id.', Product id: '.$row->product_id.'<br/>';
+            //     $product_promotion = Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id]);
+            //     if($product_promotion->count()>1) dd($product_promotion->get());
+
+            //     if($product_promotion->count() >0 ){
+            //         if($product_promotion->count()==1 && $disPercent>0){
+
+            //             //echo 'note: '.$row->product_id.'<br/>';
+            //             // $product_promotion = Product_promotion::where([$row->promotion_id]);
+            //             // if($product_promotion){
+            //             //     $checkOrder = Order_item::where(['product_id'=>$product_promotion->product_id, 'promotion_id'=>$product_promotion->promotion_id]);
+            //             // }
+            //         }
+            //     }
+            // }
+        }
+        exit;
     }
 
     function updateCustomerPhoneFormUserTable(){

@@ -152,9 +152,15 @@
                                                 }else $outlet_discount[] = 0;
 
                                                 $disPercent = ((($order_item->sale_price - $order_item->discount_price) / $order_item->sale_price) * 100);
+                                                
                                             ?>
                                             <tr>
-                                                <td style="width:8%" > <img src="{{ $thumbs }}" height="35" data-product="{{$order_item->product_id}}"> {{$order_item->outlet_percent}}</td>
+                                                <td style="width:8%" > 
+                                                    <a target="_blank" href="{{ route('product',[app()->getLocale(), $order_item->product->slug]) }}">
+                                                        <img src="{{ $thumbs }}" height="35" data-product="{{$order_item->product_id}}">
+                                                    </a>
+                                                    {{$order_item->outlet_percent}}
+                                                </td>
                                                 <td style="border-left:0;width:37%">
                                                     <h5 style="font-size:11px">{{ $order_item->product->title }} - {{$order_item->product->design_code }}</h5>
                                                     <p style="font-size: 9px;margin-bottom:0">

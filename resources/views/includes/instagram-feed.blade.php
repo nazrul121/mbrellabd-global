@@ -44,9 +44,7 @@
                                 @foreach ($feeds as $feed)
                                     @if($feed->type=='video')
                                         <div class="instagram-card" style="position:relative">
-                                            <a href="{{ $feed->permalink }}">
-                                                <iframe id="myIframe" width="100%" style="position:absolute;height:228px;background: #e09d1b;" height="100%" src="{{$feed->url}}" frameborder="0" autoplay="false"></iframe>
-                                            </a>
+                                            <iframe id="myIframe" width="100%" height="228px"  style="position:absolute;background: #e09d1b;" src="{{$feed->url}}?autoplay=0"  frameborder="0"></iframe>                                        
                                         </div>
                                     @else
                                     <div class="instagram-card">

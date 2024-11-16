@@ -65,6 +65,7 @@
             50% { transform: translateY(-15px); }
         }
     </style>
+    
 </head>
 <body>
 
@@ -72,6 +73,9 @@
 <div class="container error-container bg-light p-md-5">
     <?php echo $__env->yieldContent('content'); ?>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<?php echo $__env->yieldPushContent('script'); ?>
 
 </body>
 </html>

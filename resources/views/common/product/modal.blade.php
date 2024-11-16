@@ -54,18 +54,28 @@
                 <form id="quickEditForm" action="" method="POST" class="needs-validation" >@csrf
                     <input type="hidden" name="id" id="id">
                    
-                    @foreach (get_currency() as $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input newCountries" name="langs[]" type="checkbox" value="{{ $item->id }}" id="c{{ $item->short_name }}"> 
-                            <img src="{{ url($item->flag) }}" style="height:12px; margin:5px;">
-                            <label class="form-check-label" for="c{{ $item->short_name }}"> {{ $item->name }} </label>
+                    @foreach (get_currency() as $key=>$item)
+                        <div class="form-group">
+                            <div class="checkbox checkbox-info checkbox-fill d-inline">
+                                <input type="checkbox" name="langs[]" type="checkbox" value="{{ $item->id }}" id="c{{ $key }}" checked>
+                                <label for="c{{ $key }}" class="cr"> <img src="{{ url($item->flag) }}" style="height:12px; margin:5px;"> 
+                                    {{ $item->name }}
+                                </label>
+                            </div>
                         </div>
                     @endforeach
-                  
+                    <hr>
+
+                    <div class="form-group">
+                        <div class="checkbox checkbox-info checkbox-fill d-inline">
+                            <input type="checkbox" name="newArrival" id="newArrival">
+                            <label for="newArrival" class="cr">This is  <b>newArrival</b> item</label>
+                        </div>
+                    </div>
                    
                     <div class="mb-3 col-md-12">
-                        <div class="row">
-                            <button type="submit" class="btn btn-primary float-md-right submitQuickEdit"><i class="fas fa-edit"></i> Submit edit</button>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary submitQuickEdit"><i class="fas fa-edit"></i> Submit edit</button>
                         </div>
                     </div>
                 </form>

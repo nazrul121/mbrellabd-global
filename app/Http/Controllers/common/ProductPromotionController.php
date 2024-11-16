@@ -15,9 +15,11 @@ use App\Models\Product_combination;
 use App\Models\Group;
 use App\Models\Inner_group;
 use App\Models\Child_group;
+use App\Models\order_item;
 
 class ProductPromotionController extends Controller
 {
+    
     function promotion_form(Promotion $promotion, Request $request){
         // dd($promotion->promotion_type->name_origin);
         if($promotion->promotion_type->name_origin=='group-discount'){
@@ -259,24 +261,37 @@ class ProductPromotionController extends Controller
 
 
     function remove_product_promotion(Product_promotion $product_promotion){
+       
         try {
-            $product_promotion->delete();
-            return response()->json(['success' => 'promotion item hasn been deleted successfully!']);
+            $checkOrder = Order_item::where(['product_id'=>$product_promotion->product_id, 'promotion_id'=>$product_promotion->promotion_id]);
+            if($checkOrder->count() < 1){
+                $product_promotion->delete();
+                return response()->json(['success' => 'promotion item hasn been deleted successfully!']);
+            }else{
+                return response()->json(['alert' => 'promotion item belongs to one/more orders!']);
+            }
+            
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Deletion failed. Its may be the foreign key constrate error!!']);
         }
     }
 
     function remove_products_promotion( $ids ){
-        $i = 0;
+        $i = 0; $existOrder = 0;
         try {
             foreach(explode(',',$ids) as $id){
                 $product_promotion = Product_promotion::find($id);
-                $product_promotion->delete();
-                $i++;
+
+                $checkOrder = Order_item::where(['product_id'=>$product_promotion->product_id, 'promotion_id'=>$product_promotion->promotion_id]);
+                if($checkOrder->count() < 1){
+                    $product_promotion->delete();
+                    $i++;
+                }else{
+                    $existOrder++;
+                }            
             }
             // $product_promotion->delete();
-            return response()->json(['success' => '<b>'.$i.'</b> items hasn been deleted successfully!']);
+            return response()->json(['success' => '<b>'.$i.'</b> items hasn been deleted successfully and <b class="text-danger">'. $existOrder.'</b> unable to delete']);
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Deletion failed. Its may be the foreign key constrate error!!']);
         }

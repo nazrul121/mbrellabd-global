@@ -4,9 +4,9 @@
     <div class="form-group mb-3 orderInfo" style="display:none">
         <input type="hidden" name="order_ids[]" value="{{ $order->id }}">
         <div class="col-md-12 bg-light">
-            <p class="alert alert-info"><b>Shipping Area: </b>{{ $order->shipping_address->division->name }} <i class="fas fa-long-arrow-alt-right"></i>
-                {{ $order->shipping_address->district->name }} <i class="fas fa-long-arrow-alt-right"></i>
-                {{ $order->shipping_address->city->name }}  <i class="fas fa-long-arrow-alt-right"></i> {{ $order->shipping_address->address }}
+            <p class="alert alert-info"><b>Shipping Area: </b>{{ $order->shipp_division }} <i class="fas fa-long-arrow-alt-right"></i>
+                {{ $order->ship_district }} <i class="fas fa-long-arrow-alt-right"></i>
+                {{ $order->ship_city }}  <i class="fas fa-long-arrow-alt-right"></i> {{ $order->ship_address }}
             </p>
             <div class="row">
                 <label for="" class="col-md-2 text-right mt-2">Delivery Zone</label>

@@ -35,8 +35,10 @@ class RegisterController extends Controller
         // dd($user->id);
         Customer::create([
             'user_id'=>$user->id,
+            'country_id'=>session('user_currency')->id,
             'first_name'=> $data['first_name'],
             'last_name'=> $data['last_name'],
+            'phone'=>$data['phone'],
             'address'=> $data['address'],
         ]);
 

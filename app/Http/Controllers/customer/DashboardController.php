@@ -20,8 +20,8 @@ class DashboardController extends Controller
 
         if($customer ==null){
             Customer::create([
-                'user_id'=>Auth::user()->id,
-                'first_name'=>$request->first_name,'last_name'=>$request->last_name,
+                'user_id'=>Auth::user()->id, 'country_id'=>session('user_currency')->id,
+                'first_name'=>$request->first_name,'last_name'=>$request->last_name, 'phone'=>$request->phone, 
                 'division_id'=>$request->division, 'district_id'=>$request->district, 'city_id'=>$request->city,
                 'address'=>$request->address, 'postCode'=>$request->postCode
             ]);
@@ -29,7 +29,7 @@ class DashboardController extends Controller
             $customer->update([
                 'first_name'=>$request->first_name,'last_name'=>$request->last_name,
                 'division_id'=>$request->division, 'district_id'=>$request->district, 'city_id'=>$request->city,
-                'address'=>$request->address, 'postCode'=>$request->postCode
+                'address'=>$request->address, 'postCode'=>$request->postCode, 'phone'=>$request->phone, 
             ]);
         }
 
@@ -46,26 +46,27 @@ class DashboardController extends Controller
     }
 
     function update(Request $request,$lang){
-        $validator = $this->fields();
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()->all()]);
-        }
+        $validator = $this->fields(Auth::user()->customer->id);
+        // if ($validator->fails()) {
+        //     return response()->json(['errors' => $validator->errors()->all()]);
+        // }
 
         Customer::where('id',Auth::user()->customer->id)->update([
             'division_id'=>$request->division,	'district_id'=>$request->district,	'city_id'=>$request->city,
-            'first_name'=>$request->fname,'last_name'=>$request->lname,	'address'=>$request->address, 'postCode'=>$request->postCode
+            'first_name'=>$request->fname,'last_name'=>$request->lname,
+            'phone'=>$request->phone,'address'=>$request->address, 'postCode'=>$request->postCode
         ]);
 
         return back()->with('message','✓ Account information has been updated successfully!');
     }
 
     private function fields($id=null){
-        $validator = Validator::make(request()->all(), [
+        return request()->validate([
             'division'=>'required', 'district'=>'required', 'city'=>'required',
             'fname'=>'required', 'lname'=>'required',
             'phone'=>'required|unique:customers,phone,'.$id,
-            'email'=>'sometimes|nullable|unique:shipping_addresses,email,'.$id,
             'address'=>'required',  'postCode'=>'required'
-        ]); return $validator;
+        ]);
+        // return Validator::make(request()->all(), []);
     }
 }

@@ -198,6 +198,13 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <div class="checkbox checkbox-info checkbox-fill d-inline">
+                            <input type="checkbox" name="newArrival" id="newArrival" @if($product->newArrival=='1')checked @endif value="{{old('newArrival')??$product->newArrival}}" >
+                            <label for="newArrival" class="cr">This is  <b>newArrival</b> item</label>
+                        </div>
+                    </div>
+
                     <div class="row form-group mt-4 text-right">
                         <label class="col-sm-2 col-form-label">Brand</label>
                         <div class="col-sm-3">

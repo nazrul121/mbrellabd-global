@@ -11,7 +11,7 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "dgvai/laravel-sslcommerz": "^1.0",
         "dymantic/laravel-instagram-feed": "^3.3",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.4",
         "intervention/image": "^2.7",
         "jenssegers/agent": "^2.6",

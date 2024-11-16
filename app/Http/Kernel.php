@@ -31,8 +31,8 @@ class Kernel extends HttpKernel
 
         \App\Http\Middleware\SettingMiddleware::class,
         \App\Http\Middleware\Localization::class,
-	\App\Http\Middleware\Cors::class, 
-	//\App\Http\Middleware\RedirectHttps::class,
+	    \App\Http\Middleware\Cors::class, 
+	    //\App\Http\Middleware\RedirectHttps::class,
 
         
     ];
@@ -45,6 +45,7 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
 
         'web' => [
+            \App\Http\Middleware\CustomThrottleRequests::class . ':35,1',
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
@@ -53,7 +54,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \App\Http\Middleware\Localization::class,
             \App\Http\Middleware\SettingMiddleware::class,
-           
+            \App\Http\Middleware\Cors::class, 
         ],
 
 
@@ -89,8 +90,8 @@ class Kernel extends HttpKernel
         'staff' => \App\Http\Middleware\StaffMiddleware::class,
         'common' => \App\Http\Middleware\CommonMiddleware::class,
         'access' => \App\Http\Middleware\AccessMiddleware::class,
-        'cors' => \App\Http\Middleware\Cors::class, 
-	//'https' => \App\Http\Middleware\RedirectHttps::class,
+        //'cors' => \App\Http\Middleware\Cors::class, 
+	    //'https' => \App\Http\Middleware\RedirectHttps::class,
         // 'allowMaintenanceAccess' => \App\Http\Middleware\AllowMaintenanceAccess::class,
 
     ];

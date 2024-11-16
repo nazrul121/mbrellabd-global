@@ -15,7 +15,7 @@
             <div class="card">
                 <div class="card-header row">
                     <div class="col-md-6">
-                        <h5>SSLCOMMERZ <b>Payments</b></h5>
+                        <h5>Online <b>Payments</b></h5>
                         Total of <b>{{ $orderPayments->count() }}</b> records
                     </div>
                     <div class="col-md-6 text-md-right">
@@ -53,12 +53,10 @@
                                 <tbody>
                                     @foreach ($orderPayments as $key=>$item)
                                         @php 
-                                            if (strtolower($item->status)=='cancelled'){
+                                            if (strtolower($item->status)=='cancelled' || strtolower($item->status)=='failed' || strtolower($item->status)=='rejected'){
                                                 $color = 'text-danger';
                                             }
-                                            if (strtolower($item->status)=='failed'){
-                                                $color = 'text-danger';
-                                            }
+                                            
                                             if (strtolower($item->status)=='valid' || strtolower($item->status)=='success' || strtolower($item->status)=='accepted'){
                                                 $color = 'text-success';
                                                 

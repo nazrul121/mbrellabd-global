@@ -9,8 +9,13 @@ use App\Http\Controllers\MaintenanceController;
 
 
 Route::get('/storage-link', function () { Artisan::call('storage:link');});
-Route::get('/cache-clear', function () { Artisan::call('cache:clear');});
-Route::get('/config-clear', function () { Artisan::call('config:clear');});
+Route::get('/clear-all', function () { 
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+});
+
 
 
 Route::get('/change-currency/{lang}', [App\Http\Controllers\HomeController::class, 'change_currency'])->name('change-currency');
@@ -177,6 +182,7 @@ Route::group(['prefix' => '{locale?}', 'middleware' => 'web'], function () {
     
 
 });
+
 
 
 // Route::middleware(['allowMaintenanceAccess'])->group(function () {

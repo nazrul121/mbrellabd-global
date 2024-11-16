@@ -34,10 +34,13 @@
                         // dd($cat);
                         ?>
                         <div class="article-slick-item" data-aos="fade-up" data-aos-duration="700">
-                            <div class="article-card bg-transparent p-0">
+                            <div class="article-card bg-transparent p-2">
                                 <a class="article-card-img-wrapper" href="<?php echo e(route('news',[app()->getLocale(), $blog->slug])); ?>">
                                     <img src="<?php echo e(url('storage/'.$blog->photo)); ?>" alt="<?php echo e($blog->title); ?>"  class="article-card-img rounded">
-                                    <span class="article-tag article-tag-absolute rounded"><?php echo e($cat->title); ?></span>
+                                    <span class="article-tag article-tag-absolute rounded">
+                                        <?php echo e($cat->title); ?>
+
+                                    </span>
                                 </a>
                                 <p class="article-card-published text_12 d-flex align-items-center">
                                     <span class="article-date d-flex align-items-center">
@@ -58,7 +61,8 @@
                                     </span>
                                 </p>
                                 <h2 class="article-card-heading heading_18">
-                                    <a class="heading_18" href="<?php echo e(route('news',[app()->getLocale(), $blog->slug])); ?>"><?php echo e($blog->title); ?> </a>
+                                    <a class="heading_18" href="<?php echo e(route('news',[app()->getLocale(), $blog->slug])); ?>">
+                                        <?php echo e(\Illuminate\Support\Str::limit($blog->title, 80, '...')); ?>  </a>
                                 </h2>
                             </div>
                         </div>

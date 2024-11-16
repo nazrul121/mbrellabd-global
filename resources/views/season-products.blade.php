@@ -69,6 +69,11 @@
                                                 <span class="badge-label badge-percentage rounded">-{{ number_format($percent) }} %</span>
                                             </div>
                                         @endif
+                                        @if($product->newArrival==1)
+                                            <div class="product-badge">
+                                                <span class="badge-labelNew rounded">New Arrival</span>
+                                            </div>
+                                        @endif
                                         @if(is_stock_out($product->id))
                                             <div class="product-badge">
                                                 <span class="p-2 bg-warning">Stock out</span>

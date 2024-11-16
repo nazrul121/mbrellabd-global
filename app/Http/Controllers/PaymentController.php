@@ -129,7 +129,7 @@ class PaymentController extends Controller
         $order = Order::where('id',$request->reference)->first();
         Order_payment::create([
             'order_id'=>$request->reference,
-            'payment_type_id'=>1,
+            'payment_type_id'=>8,
             'transaction_id'=>$order->transaction_id,
             'bank_tran_id'=>null,
             'amount'=>$request->amount,

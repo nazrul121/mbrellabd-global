@@ -11,6 +11,7 @@ use DateTime;
 
 class DHL
 {
+
     function get_rates(){
         $acNumber = env('DHL_Ac_number');
         $auth = base64_encode(env('DHL_API_KEY').':'.env('DHL_SECRATE'));
@@ -84,7 +85,7 @@ class DHL
             //$endpoint = 'https://express.api.dhl.com/mydhlapi/shipments?strictValidation=false&bypassPLTError=false&validateDataOnly=false';
         //}
 
- 	$endpoint = 'https://express.api.dhl.com/mydhlapi/shipments?strictValidation=false&bypassPLTError=false&validateDataOnly=false';
+ 	    $endpoint = 'https://express.api.dhl.com/mydhlapi/shipments?strictValidation=false&bypassPLTError=false&validateDataOnly=false';
 
 
         $orderItems = [];
@@ -109,7 +110,9 @@ class DHL
             $amountInUSD =  ($item->discount_price / $exchangeRate)+$vatExcl;
             $subTotalInUSD[] = $amountInUSD;
 
-            
+            $hsCode = \DB::table('product_weights')->where(['product_id'=>$item->product_id])->pluck('hs_code')->first();
+            if($hsCode==null) $hsCode = "84713000";
+
             $orderItems[] = [
                 "number"=> $key + 1,
                 "description"=> $item->product->title,
@@ -122,7 +125,7 @@ class DHL
                 "commodityCodes"=>  [
                   [
                     "typeCode"=>  "outbound",
-                    "value"=>  "84713000"
+                    "value"=>  $hsCode
                   ]
                 ],
 

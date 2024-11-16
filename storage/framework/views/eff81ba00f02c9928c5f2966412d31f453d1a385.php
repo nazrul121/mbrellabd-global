@@ -64,6 +64,12 @@
                                             </div>
                                         <?php endif; ?>
 
+                                        <?php if($product->newArrival==1): ?>
+                                            <div class="product-badge">
+                                                <span class="badge-labelNew rounded">New Arrival</span>
+                                            </div>
+                                        <?php endif; ?>
+
                                         <?php if(is_stock_out($product->id)): ?>
                                             <div class="product-badge">
                                                 <span class="p-2 bg-warning">Stock out</span>

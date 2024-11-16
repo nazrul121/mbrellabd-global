@@ -28,7 +28,7 @@
 <div class="form-group row mt-3 text-right">
     <label for="staticEmail" class="col-sm-2 col-form-label">Phone <span class="required">*</span></label>
     <div class="col-sm-10">
-        <input type="text" class="form-control" name="phone" value="{{ Auth::user()->phone }}">
+        <input type="text" class="form-control" name="phone" value="{{ Auth::user()->customer->phone }}">
     </div>
 </div>
 

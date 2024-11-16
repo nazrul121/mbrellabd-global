@@ -295,25 +295,60 @@
 @endpush
 
 @push('scripts')
+    @if(!old('billing_shipping_same'))
+        <script>
+           setTimeout(() => {
+                $('#billingShippingSame').prop('checked', false);
+                $('#billingShippingSame').trigger('change');
+           }, 1700);
+        </script>
+    @endif 
 
     @if(old('division'))
         <script>
+            
             setTimeout(function() {
                 get_district("{{ old('division') }}");
                 get_cities("{{ old('district') }}");
+            }, 1000);
 
-                get_district("{{ old('shipping_division') }}");
-                get_cities("{{ old('shipping_district') }}");
+            setTimeout(() => {
+                var district = "{{ old('district')  }}";
+                $("[name=district] option[value='" + district + "']").prop("selected", true);
 
-            }, 500);
+                var city = "{{ old('city')  }}";
+                $("[name=city] option[value='" + city + "']").prop("selected", true);
+            }, 2000);
             
         </script>
     @endif
+
+    @if(old('shipping_division'))
+        <script>
+            
+            setTimeout(function() {
+                get_shipping_districts("{{ old('shipping_division') }}");
+                get_shipping_cities("{{ old('shipping_district') }}");
+            }, 2200);
+
+           
+
+            setTimeout(() => {
+                var shipping_district = "{{ old('shipping_district')  }}";
+                $("[name=shipping_district] option[value='" + shipping_district + "']").prop("selected", true);
+
+                var shipping_city = "{{ old('shipping_city')  }}";
+                $("[name=shipping_city] option[value='" + shipping_city + "']").prop("selected", true);
+            }, 3000);
+            
+        </script>
+    @endif
+
     
     <script>
         $( document ).ready( function() {
             var url = $('#url').val();
-
+            
             get_outlet_customer();
 
          
@@ -403,29 +438,25 @@
                 
                 if ($('#billingShippingSame').is(':checked')) {
                     $.get(url+"/{{ app()->getLocale() }}/get-zone-from-city/"+id+'/'+intotal, function(data, status){
-                    $('.zoneCosting').html(data[0]);
-                    let total = parseFloat($('[name=intotal]').val());
-                    $('.totalPayable').text((parseFloat(data[1]) + total).toFixed(2));
-                    $('.shippingCost').text( parseFloat(data[1]));
-                    $('.shippingCostField').slideDown();
-                    $('[name=shipping]').prop('required',false);
-
-                    $('[name=shipping]').prop('required',false);
-                    //remove delivery charge if invoice discount with free home delivery
-                    @if($invoiceDiscount!=null && $invoiceDiscount->type=='free-delivery' && array_sum($subtotal) >= $invoiceDiscount->min_order_amount)
-                        var shippingCost = parseFloat($('.shippingCost').text());
-                        $('.shippingCost').text('-'+shippingCost);
-
-                        var totalPayable = parseFloat($('.totalPayable').text());
-                        $('.totalPayable').text((totalPayable-shippingCost).toFixed(2));
+                        $('.zoneCosting').html(data[0]);
+                        let total = parseFloat($('[name=intotal]').val());
+                        $('.totalPayable').text((parseFloat(data[1]) + total).toFixed(2));
+                        $('.shippingCost').text( parseFloat(data[1]));
+                        $('.shippingCostField').slideDown();
                         $('[name=shipping]').prop('required',false);
-                    @endif
-                });
-                }
 
-                
-             
-               
+                        $('[name=shipping]').prop('required',false);
+                        //remove delivery charge if invoice discount with free home delivery
+                        @if($invoiceDiscount!=null && $invoiceDiscount->type=='free-delivery' && array_sum($subtotal) >= $invoiceDiscount->min_order_amount)
+                            var shippingCost = parseFloat($('.shippingCost').text());
+                            $('.shippingCost').text('-'+shippingCost);
+
+                            var totalPayable = parseFloat($('.totalPayable').text());
+                            $('.totalPayable').text((totalPayable-shippingCost).toFixed(2));
+                            $('[name=shipping]').prop('required',false);
+                        @endif
+                    });
+                }               
             })
 
             $('[name=shipping_city]').on('change',function(){
@@ -498,7 +529,10 @@
                 $(".shipping").slideDown('fast');
             }else {
                 $(".shipping").slideUp('fast');
-                $(".zoneCosting").html('Waiting<br/>for data selection....');
+                if ($('#billingShippingSame').is(':checked')) {
+                    $(".zoneCosting").html('Waiting<br/>for data selection....');
+                }
+                
             }
         }
 
@@ -508,6 +542,7 @@
             $.ajax({
                 url:url+"/get-districts/"+ division_id, method:"get",
                 success:function(data){
+                    $("[name=district]").append('<option value="">Choose one</option>');
                     $.each(data, function(index, value){
                         $("[name=district]").append('<option value="'+value.id+'|'+value.name+'">'+value.name+'</option>');
                     });
@@ -519,6 +554,8 @@
             
             $.ajax({ url:url+"/get-cities/"+ district_id, method:"get",
                 success:function(data){
+                    $("[name=city]").append('<option value="">Choose one</option>');
+
                     $.each(data, function(index, value){
                         $("[name=city]").append('<option value="'+value.id+'|'+value.name+'">'+value.name+'</option>');
                     });
@@ -535,6 +572,7 @@
         function get_shipping_cities(district_id){
             $.ajax({ url:url+"/get-cities/"+ district_id, method:"get",
                 success:function(data){
+                    $("[name=shipping_city]").append('<option value="">Choose one</option>');
                     $.each(data, function(index, value){
                         $("[name=shipping_city]").append('<option value="'+value.id+'|'+value.name+'">'+value.name+'</option>');
                     });
@@ -545,6 +583,7 @@
         function get_shipping_districts(div_id){
             $.ajax({ url:url+"/get-districts/"+ div_id, method:"get",
                 success:function(data){
+                    $("[name=shipping_district]").append('<option value="">Choose one</option>');
                     $.each(data, function(index, value){
                         $("[name=shipping_district]").append('<option value="'+value.id+'|'+value.name+'">'+value.name+'</option>');
                     });

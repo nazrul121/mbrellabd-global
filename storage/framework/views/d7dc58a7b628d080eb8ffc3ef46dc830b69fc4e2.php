@@ -190,7 +190,7 @@
             if(confirm('Are you sure to remove this promotion permanently?? --- There is no Undo option')){
                 let id = $(this).attr('id')
                 $.ajax({
-                    url:url+"/common/ad/promotion/delete/"+id+"",
+                    url:url+"/common/ad/promotion/delete/"+id,
                     dataType:"json",
                     success:function(data){
                         if(data.error) alert(data.error);

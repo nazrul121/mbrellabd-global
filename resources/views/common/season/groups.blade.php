@@ -2,7 +2,7 @@
     <div class="col-md-12" >
         <?php
             $group_ids = \App\Models\Group_season::where('season_id',$season->id)->select('group_id')->distinct('group_id')->get()->toArray();
-            $categories = \App\Models\Group::whereIn('id',$group_ids)->get(); ?>
+            $categories = \App\Models\Group::whereIn('id',$group_ids)->where('status','1')->get(); ?>
 
         @if(COUNT($group_ids)>0)
             <label>Check from Categories [ <code>Allow visibility for customers</code> ]</label>
@@ -19,7 +19,7 @@
                 </div>
                 @php
                     $innerGroup_ids = \App\Models\Inner_group_season::where(['season_id'=>$season->id, 'group_id'=>$cat->id])->select('inner_group_id')->distinct('inner_group_id')->get()->toArray();
-                    $sub_categories = \App\Models\Inner_group::whereIn('id',$innerGroup_ids)->get();
+                    $sub_categories = \App\Models\Inner_group::whereIn('id',$innerGroup_ids)->where('status','1')->get();
                 @endphp
                 @foreach ($sub_categories as $key2=>$sub)
                     <div class="col-sm-10 offset-1 ">
@@ -32,8 +32,8 @@
                     </div>
 
                     @php
-                        $childGroup_ids = \App\Models\Child_group_season::where(['season_id'=>$season->id, 'inner_group_id'=>$sub->id])->select('child_group_id')->distinct('child_group_id')->get()->toArray();
-                        $child_categories = \App\Models\Child_group::whereIn('id',$childGroup_ids)->get();
+                        $childGroup_ids = \App\Models\Child_group_season::where(['season_id'=>$season->id, 'inner_group_id'=>$sub->id, 'status'=>'1'])->select('child_group_id')->distinct('child_group_id')->get()->toArray();
+                        $child_categories = \App\Models\Child_group::whereIn('id',$childGroup_ids)->where('status','1')->get();
                     @endphp
                     @if ($child_categories->count()>0)
                         @foreach ($child_categories as $key3=>$child)

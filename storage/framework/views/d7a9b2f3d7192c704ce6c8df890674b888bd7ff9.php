@@ -244,6 +244,7 @@
         chatbox.setAttribute("page_id", "1786866638296873");
         chatbox.setAttribute("attribution", "biz_inbox");
     </script>
+
 </body>
 
 </html><?php /**PATH D:\xampp-php-8.2\htdocs\laravelapp\resources\views/layouts/app.blade.php ENDPATH**/ ?>

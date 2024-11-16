@@ -6,6 +6,7 @@ use App\Models\Campaign_product;
 use App\Models\Cartlist;
 use App\Models\Product;
 use App\Models\Product_combination;
+use App\Models\Product_promotion;
 use App\Models\Variation_option;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
@@ -68,11 +69,22 @@ class CartController extends Controller
     
         try{
             $proCombQty = Product_combination::where(['product_id'=>$request->id])->pluck('qty')->first();
-           
 
             if( ($request->variants =='' || $request->variants==null) && $proCombQty){
                 $data[1] = 'dismatch';
                 $data[3] = 'Combination item is <b>Stock out</b>';
+                return response()->json($data);
+            }
+
+
+            $product = Product::where('id',$request->id)->first();
+            $productPromotion = Product_promotion::where(['product_id'=>$product->id,'status'=>'1'])->orderBy('discount_price','DESC')->first();
+            $disPrice = product_price($product->id,$product->sale_price);
+            $disPercent = ((($product->sale_price - $disPrice) / $product->sale_price) * 100);
+
+            if($productPromotion==null && $disPercent>0){
+                $data[1] = 'dismatch';
+                $data[3] = 'The item can not be added. A <b>promotion</b> issue occurred';
                 return response()->json($data);
             }
 
@@ -122,10 +134,18 @@ class CartController extends Controller
                     if ($cartlist->exists())  $cartlist->update(['qty'=>$cartlist->first()->qty + 1]);
                     else{
                         if (auth()->check()) $user_id = auth()->user()->id;else $user_id = null;
+
+                        $pP = \App\Models\Product_promotion::where(['product_id'=>$request->id])->select('promotion_id')->first();
+            
+                        if($pP !=null){
+                            $promotion_id = $pP->promotion_id;
+                        }else $promotion_id = null;
+
                         $data = [
                             'country_id'=>session('user_currency')->id,
                             'session_id' =>session()->get('session_id'),
                             'product_id'=>$request->id,
+                            'promotion_id'=>$promotion_id,
                             'variation_option_id'=>$request->variation_option_id,
                             'product_combination_id'=>$variant->id,
                             'campaign_id'=> Campaign_product::where('product_id',$request->id)->pluck('campaign_id')->first(),
@@ -149,9 +169,17 @@ class CartController extends Controller
                     if ($cartlist->exists())  $cartlist->update(['qty'=>$cartlist->first()->qty + 1]);
                     else{
                         if (Auth::check()) $user_id = Auth::user()->id;else $user_id = null;
+
+                        $pP = \App\Models\Product_promotion::where(['product_id'=>$request->id])->select('promotion_id')->first();
+                        if($pP !=null){
+                            $promotion_id = $pP->promotion_id;
+                        }else $promotion_id = null;
+                    
                         Cartlist::create([
                             'country_id'=>session('user_currency')->id,
-                            'session_id' =>session()->get('session_id'),'product_id'=>$request->id,
+                            'session_id' =>session()->get('session_id'),
+                            'product_id'=>$request->id,
+                            'promotion_id'=>$promotion_id,
                             'variation_option_id'=>$request->variation_option_id,
                             'campaign_id'=> Campaign_product::where('product_id',$request->id)->pluck('campaign_id')->first(),
                             'qty'=>$request->qty, 'user_id'=>$user_id

@@ -144,6 +144,7 @@ class ProductController extends Controller
         if (isset($request->is_group)) $data['is_group'] = '1'; else $data['is_group']  = '0';
         if (isset($request->portable)) $data['portable'] = '1'; else $data['portable'] = '0';
         if (isset($request->cod)) $data['cod'] = '1'; else $data['cod'] = '0';
+        if (isset($request->newArrival)) $data['newArrival'] = '1'; else $data['newArrival'] = '0';
 
         $product = Product::create($data);
         $product->countries()->attach($request->langs);
@@ -192,6 +193,11 @@ class ProductController extends Controller
 
     function quick_update(Request $request,Product $product){
         $product->countries()->sync($request->langs);
+
+        if (isset($request->newArrival)) $newArrival = '1'; else $newArrival = '0';
+
+        $product->update(['newArrival'=>$newArrival]);
+
         return response()->json(['success' => 'Quick edit has been executed successfully!']);
     }
 
@@ -210,6 +216,8 @@ class ProductController extends Controller
         if (isset($request->is_group)) $data['is_group'] = '1'; else $data['is_group']  = '0';
         if (isset($request->portable)) $data['portable'] = '1'; else $data['portable'] = '0';
         if (isset($request->cod)) $data['cod'] = '1'; else $data['cod'] = '0';
+        if (isset($request->newArrival)) $data['newArrival'] = '1'; else $data['newArrival'] = '0';
+
 
         // $currency = \App\Models\Country::where('is_default','1')->first();
         // $data['net_price'] = $request->net_price / $currency->value;
@@ -267,7 +275,7 @@ class ProductController extends Controller
 
             $data .= '<div class="btn-group card-option" style="min-height:20px">
             <button type="button" class="dropdown-toggle btn btn-secondary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-            <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">';
+            <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right" style="max-height:200px;overflow-x:scroll">';
 
             if(check_access('view-product-variation')){
                 $data .= '<li class="dropdown-item"><a class="colors" id="'.$row->id.'"><span><i class="feather icon-camera"></i> Vairation Image </span></a></li> <hr/>';

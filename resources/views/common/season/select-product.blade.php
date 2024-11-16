@@ -33,7 +33,7 @@
                 <input class="itemCheck" @if($count >0)checked @endif type="checkbox" style="width:20px;height:20px;position:relative;top:9px;" name="ids[]" id="item{{ $item->product->id }}"  value="{{ $item->product->id }}">
             </td>
             <td class="p-2" style="padding: 0.05rem 0.75rem;">
-                <img class="img{{ $item->product->id }}" src="{{ url('storage/'.$item->product->thumbs) }}" style="height:25px">
+                <img class="img{{ $item->product->id }}" src="{{ $item->product->thumbs }}" style="height:25px">
                 <label for="item{{ $item->product->id }}"> &nbsp; {{ $item->product->id }}. {{ $item->product->title }} </label>
             </td>
         </tr>

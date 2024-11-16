@@ -34,10 +34,12 @@
                         // dd($cat);
                         ?>
                         <div class="article-slick-item" data-aos="fade-up" data-aos-duration="700">
-                            <div class="article-card bg-transparent p-0">
+                            <div class="article-card bg-transparent p-2">
                                 <a class="article-card-img-wrapper" href="{{ route('news',[app()->getLocale(), $blog->slug]) }}">
                                     <img src="{{ url('storage/'.$blog->photo) }}" alt="{{$blog->title}}"  class="article-card-img rounded">
-                                    <span class="article-tag article-tag-absolute rounded">{{$cat->title}}</span>
+                                    <span class="article-tag article-tag-absolute rounded">
+                                        {{$cat->title}}
+                                    </span>
                                 </a>
                                 <p class="article-card-published text_12 d-flex align-items-center">
                                     <span class="article-date d-flex align-items-center">
@@ -58,7 +60,8 @@
                                     </span>
                                 </p>
                                 <h2 class="article-card-heading heading_18">
-                                    <a class="heading_18" href="{{ route('news',[app()->getLocale(), $blog->slug]) }}">{{ $blog->title }} </a>
+                                    <a class="heading_18" href="{{ route('news',[app()->getLocale(), $blog->slug]) }}">
+                                        {{ \Illuminate\Support\Str::limit($blog->title, 80, '...') }}  </a>
                                 </h2>
                             </div>
                         </div>

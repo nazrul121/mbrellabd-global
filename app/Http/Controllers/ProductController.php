@@ -38,11 +38,13 @@ class ProductController extends Controller
     function single_product(Request $request, $lang, $slug){
         $columns = Schema::getColumnListing('product_variants');
         $product = Product::where('status','1')->where('slug',$slug)->first();
-        $countryProduct = \DB::table('country_product')->where(['country_id'=>session('user_currency')->id, 'product_id'=>$product->id]);
-
-        if($product !=null && $countryProduct->count()>0){
-            $meta_data = Product_meta::where('product_id',$product->id)->get();
-            return view('product-details', compact('product','columns','meta_data'));
+        
+        if($product !=null){
+            $countryProduct = \DB::table('country_product')->where(['country_id'=>session('user_currency')->id, 'product_id'=>$product->id]);
+            if($countryProduct->count()>0){
+                $meta_data = Product_meta::where('product_id',$product->id)->get();
+                return view('product-details', compact('product','columns','meta_data'));
+            }
         }
         else return view('errors.404');
     }
@@ -77,7 +79,7 @@ class ProductController extends Controller
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
 
             // dd('three in price ');
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('products', compact('products', 'meta_data'));
         }
@@ -100,13 +102,13 @@ class ProductController extends Controller
             $groups = explode(',',$request->group);
             $ids = Group_product::whereIn('group_id',$groups)->select('product_id')->distinct('product_id')->get()->toArray();
             $products = Product::where('status','1')->whereIn('id',$ids)
-            ->select(['id','title','slug','thumbs','sale_price'])->orderBy($field, $sortBy)->paginate(20);
+            ->select(['id','title','slug','thumbs','sale_price','newArrival'])->orderBy($field, $sortBy)->paginate(20);
         }
 
         else if($request->inner){
             $groups = explode(',',$request->inner);
             $ids = Inner_group_product::whereIn('inner_group_id',$groups)->select('product_id')->distinct('product_id')->get()->toArray();
-            $products = Product::where('status','1')->whereIn('id',$ids)->select(['id','title','slug','thumbs','sale_price'])
+            $products = Product::where('status','1')->whereIn('id',$ids)->select(['id','title','slug','thumbs','sale_price','newArrival'])
             ->orderBy($field, $sortBy)->paginate(20);
         }
         else if($request->color){
@@ -123,7 +125,7 @@ class ProductController extends Controller
         else if($request->keyword){
             $search = $request->keyword;
             $ids = \App\Models\Country_product::where('country_id',session('user_currency')->id)->select('product_id')->distinct()->get()->toArray();
-            $products = Product::select(['id','title','slug','thumbs','sale_price'])
+            $products = Product::select(['id','title','slug','thumbs','sale_price','newArrival'])
             ->whereIn('id',$ids)
             ->where('status','1')
             // ->where('title', 'like', '%' . $request->keyword . '%')
@@ -142,12 +144,12 @@ class ProductController extends Controller
             return view('products', compact('products', 'meta_data'));
         }else{
             $ids = \App\Models\Country_product::where('country_id',session('user_currency')->id)->select('product_id')->distinct()->get()->toArray();
-            $products = Product::whereIn('id',$ids)->where('status','1')->select(['id','title','slug','thumbs','sale_price'])->orderBy($field, $sortBy)->paginate(20);
+            $products = Product::whereIn('id',$ids)->where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->orderBy($field, $sortBy)->paginate(20);
             return view('products', compact('products', 'meta_data'));
         }
 
 
-        $products = Product::where('status','1')->whereIn('id',$product_ids)->select(['id','title','slug','thumbs','sale_price'])->orderBy($field, $sortBy)->paginate(20);
+        $products = Product::where('status','1')->whereIn('id',$product_ids)->select(['id','title','slug','thumbs','sale_price','newArrival'])->orderBy($field, $sortBy)->paginate(20);
         return view('products', compact('products', 'meta_data'));
     }
 
@@ -256,7 +258,7 @@ class ProductController extends Controller
             $product_ids = \App\Models\Country_product::whereIn('product_id',$ids)->where('country_id',session('user_currency')->id)->select('product_id')->distinct()->get()->toArray();
         }
 
-        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
+        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
         $meta_data = Group_meta::where('group_id',$group_id)->get();
         // dd($meta_data);
         return view('products',compact('products','meta_data'));
@@ -283,7 +285,7 @@ class ProductController extends Controller
             $min = $this->min_price( trim(explode('-',$request->price)[0]) );
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
             // dd('three in price ');
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('products',compact('products'));
         }
@@ -353,7 +355,7 @@ class ProductController extends Controller
             $product_ids = \App\Models\Country_product::whereIn('product_id',$ids)->where('country_id',session('user_currency')->id)->select('product_id')->distinct()->get()->toArray();
         }
 
-        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
+        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
        
         $meta_data = Inner_group_meta::where('inner_group_id',$group_id)->get();
         return view('products',compact('products','meta_data'));
@@ -381,7 +383,7 @@ class ProductController extends Controller
             $min = $this->min_price( trim(explode('-',$request->price)[0]) );
             $max = $this->max_price( trim(explode('-',$request->price)[1]) );
             // dd('three in price ');
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)
             ->whereBetween('sale_price',array($min, $max) )->orderBy($field, $sortBy)->paginate(20);
             return view('products',compact('products'));
         }
@@ -402,7 +404,7 @@ class ProductController extends Controller
             $meta_data = Child_group_meta::where('child_group_id',$group_id)->get();
 
             // dd('three in price ');
-            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])
+            $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])
             ->whereBetween('sale_price',array($min, $max) )
             ->whereIn('id',$product_ids)
             ->orderBy($field, $sortBy)->paginate(20);
@@ -453,7 +455,7 @@ class ProductController extends Controller
             $product_ids = \App\Models\Country_product::whereIn('product_id',$ids)->where('country_id',session('user_currency')->id)->select('product_id')->distinct()->get()->toArray();
         }
 
-        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
+        $products = Product::where('status','1')->select(['id','title','slug','thumbs','sale_price','newArrival'])->whereIn('id',$product_ids)->orderBy($field, $sortBy)->paginate(20);
         $meta_data = Child_group_meta::where('child_group_id',$group_id)->get();
        
         return view('products',compact('products','meta_data'));
@@ -466,7 +468,7 @@ class ProductController extends Controller
         $meta_data = Product_meta::inRandomOrder()->take(3)->get();
  
         $product_ids = Highlight_product::where('highlight_id',$highlight->id)->select('product_id')->distinct('product_id')->get()->toArray();
-        $products = Product::where('status','1')->whereIn('id',$product_ids)->select(['id','title','slug','thumbs','sale_price'])->orderBy($field, $sortBy)->paginate(20);
+        $products = Product::where('status','1')->whereIn('id',$product_ids)->select(['id','title','slug','thumbs','sale_price','newArrival'])->orderBy($field, $sortBy)->paginate(20);
         return view('highlight-products', compact('products', 'meta_data'));
 
     }

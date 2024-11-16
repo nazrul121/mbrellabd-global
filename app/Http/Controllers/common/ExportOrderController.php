@@ -115,65 +115,73 @@ class ExportOrderController extends Controller
             }else return $row->id.' does not have order';
         })
         ->editColumn('disc', function($row){
-           
-            if($row->promotion_id==null){
-                if($row->outlet_percent!=null) $dis_data = $row->outlet_percent;
-                else $dis_data =  0;
 
-                if($row->order->invoice_discount > 0){
-                    $dis_data = (($row->sale_price - $row->discount_price) / $row->sale_price ) * 100;
-                }
+            $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+
+       
+            // if($row->promotion_id==null){
+            //     if($row->outlet_percent!=null) $dis_data = $row->outlet_percent;
+            //     else $dis_data =  0;
+
+            //     if($row->order->invoice_discount > 0){
+            //         $dis_data = (($row->sale_price - $row->discount_price) / $row->sale_price ) * 100;
+            //     }
                 
-            }else{
-                $pP = DB::table('product_promotion')->where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
+            // }else{
+            //     $pP = DB::table('product_promotion')->where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
               
-                if($pP==null){
-                    return 'product: '.$row->product_id;
-                }else{
-                    if($pP->discount_in=='percent'){
-                        $dis_data = $pP->discount_value;
-                    }else $dis_data = $pP->discount_value;
-                }
-            }
-            return $dis_data.'%';
+            //     if($pP==null){
+            //         return 'product: '.$row->product_id;
+            //     }else{
+            //         if($pP->discount_in=='percent'){
+            //             $dis_data = $pP->discount_value;
+            //         }else $dis_data = $pP->discount_value;
+            //     }
+            // }
+            return number_format($disPercent, 2).'%';
            
         })
         ->editColumn('disc_name', function($row){
             if($row->order_id !=null){
+                $promoName = '';
+
                 if($row->promotion_id==null){
                     if($row->outlet_customer_id!=null){
                         $promoName = 'Outlet Discount';
-                    }else $promoName = '';
+                    }
+                    $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+                    if($disPercent>0){
+                        $promoName = 'note: '.$row->product_id;
+                    }
                 }else{
                     $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
-                    if($pP==null){
-                        $promoName = '';
-                    }else{
-                        $promoName = DB::table('promotions')->where('id',$row->promotion_id)->pluck('title')->first();
-                    }
+                    $promoName = DB::table('promotions')->where('id',$row->promotion_id)->pluck('title')->first();
+                    
                 }
                 return $promoName;
             }else return $row->id.' does not have order';
         })
         ->editColumn('disc_amt', function($row){
-
-            if($row->promotion_id==null){
-                if($row->outlet_customer_id!=null){
-                    $discountPercent = $row->outlet_percent;
-                }else $discountPercent = 0;
-            }
-            else{
-                $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
+            $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+            $discount_amount = $row->sale_price * ($disPercent / 100);
+            return number_format($discount_amount, 2);
+            // if($row->promotion_id==null){
+            //     if($row->outlet_customer_id!=null){
+            //         $discountPercent = $row->outlet_percent;
+            //     }else $discountPercent = 0;
+            // }
+            // else{
+            //     $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
                
-                if($pP==null){
-                    $discountPercent = 0;
-                }else{
-                    if($pP->discount_in=='percent') $discountPercent = $pP->discount_value;
-                    else $discountPercent = ($pP->discount_value / 100) * $row->sale_price;
-                }
-            } 
-            $amount = ($row->sale_price/100)*$discountPercent;
-            return number_format($amount, 2);
+            //     if($pP==null){
+            //         $discountPercent = 0;
+            //     }else{
+            //         if($pP->discount_in=='percent') $discountPercent = $pP->discount_value;
+            //         else $discountPercent = ($pP->discount_value / 100) * $row->sale_price;
+            //     }
+            // } 
+            // $amount = ($row->sale_price/100)*$discountPercent;
+            // return number_format($amount, 2);
         })
         ->editColumn('tax', function($row){
             if($row->order_id !=null){
@@ -193,26 +201,29 @@ class ExportOrderController extends Controller
         })
         
         ->editColumn('net_amount', function($row){
-            if($row->promotion_id==null){
-                if($row->outlet_customer_id!=null){
-                    $discountPercent = $row->outlet_percent;
-                }else $discountPercent = 0;
-            }
-            else{
-                $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
+            $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+            $discount_amount = $row->sale_price * ($disPercent / 100);
+            return $row->sale_price - $discount_amount;
+            // if($row->promotion_id==null){
+            //     if($row->outlet_customer_id!=null){
+            //         $discountPercent = $row->outlet_percent;
+            //     }else $discountPercent = 0;
+            // }
+            // else{
+            //     $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
                
-                if($pP==null){
-                    $discountPercent = 0;
-                }else{
-                    if($pP->discount_in=='percent') $discountPercent = $pP->discount_value;
-                    else $discountPercent = ($pP->discount_value / 100) * $row->sale_price;
-                }
-            } 
-            $amount = ($row->sale_price/100)*$discountPercent;
+            //     if($pP==null){
+            //         $discountPercent = 0;
+            //     }else{
+            //         if($pP->discount_in=='percent') $discountPercent = $pP->discount_value;
+            //         else $discountPercent = ($pP->discount_value / 100) * $row->sale_price;
+            //     }
+            // } 
+            // $amount = ($row->sale_price/100)*$discountPercent;
          
-            if($row->order_id !=null){
-                return number_format($row->net_price - $amount, 2) ;
-            }else return $row->id.' does not have order';
+            // if($row->order_id !=null){
+            //     return number_format($row->net_price - $amount, 2) ;
+            // }else return $row->id.' does not have order';
         })
         
         ->editColumn('payment_method', function($row){

@@ -13,7 +13,7 @@
             <th>Barcode</th>
             <th>Qty</th>
             <th>Price</th>
-            <th>Disc</th>
+            <th>Disc %</th>
             <th>Disc Name</th>
             <th>Disc Amt</th>
             <th>Tax %</th>
@@ -64,51 +64,38 @@
                 <td>{{$row->qty}}</td>
                 <td>{{number_format($row->sale_price, 2)}}</td>
                 <td>
+                    {{-- Disc --}}
                    <?php 
+                        $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100) 
+                    ?> 
+
+                    {{ number_format($disPercent, 2)}}
+                </td>
+                <td> 
+                    @php
                         if($row->promotion_id==null){
-                            if($row->outlet_percent!=null) {
-                                $discountPercent = $row->outlet_percent;
-                                $promoName = 'outlet Discount';
-                            }else{
-                                $discountPercent =  0;
-                                $promoName = '';
+                            if($row->outlet_customer_id!=null){
+                                $promoName = 'Outlet Discount';
+                            }
+                            $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+                            if($disPercent>0){
+                                $promoName = $row->product_id;
                             }
                         }else{
                             $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
-                            if($pP==null){
-                                $discountPercent =  0;
-                                $promoName = '';
-                            }else{
-                                if($pP->discount_in=='percent') $discountPercent = $pP->discount_value;
-                                else $discountPercent = (($row->sale_price - $row->discount_price)*100) /$row->sale_price;
-                                $promoName = \DB::table('promotions')->where('id',$row->promotion_id)->pluck('title')->first();
-                            }
-                        } 
-                    ?> 
-
-                    {{$discountPercent}}
-                </td>
-                <td>{{$promoName}}</td>
+                            $promoName = DB::table('promotions')->where('id',$row->promotion_id)->pluck('title')->first();
+                            
+                        }
+                    @endphp
+                    {{$promoName}}</td>
     
                 <td>
                     <?php   
-                    if($row->promotion_id==null){
-                        if($row->outlet_customer_id!=null){
-                            $discountPercent = $row->outlet_percent;
-                        }else $discountPercent = 0;
-                    }
-                    else{
-                       $pP = \App\Models\Product_promotion::where(['promotion_id'=>$row->promotion_id, 'product_id'=>$row->product_id])->select('discount_in','discount_value')->first();
-                       if($pP==null){
-                            $discountPercent = 0;
-                        }else{
-                            if($pP->discount_in=='percent') $discountPercent = $pP->discount_value;
-                            else $discountPercent = ($pP->discount_value / 100) * $row->sale_price;
-                        }
-                    }
-                    $amount = ($row->sale_price/100)*$discountPercent;
+                        $disPercent = ((($row->sale_price - $row->discount_price) / $row->sale_price) * 100);
+                        $discount_amount = $row->sale_price * ($disPercent / 100);
+
                     ?>
-                    {{number_format($amount, 2)}}
+                    {{ number_format($discount_amount, 2) }}
                 </td>
                 
                 <td>{{ $row->vat }}</td>
@@ -120,7 +107,9 @@
                     {{ $row->order->zone->delivery_cost}}
                     @endif
                 </td>
-                <td>{{ number_format($row->net_price - $amount, 2) }}</td>
+                <td>
+                    {{ number_format($row->sale_price - $discount_amount, 2) }}
+                </td>
                 <td>{{ $row->order->payment_geteway->name }}</td>
                 <td> {{ $row->order->order_status->title }} </td>
                 <td>

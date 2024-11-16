@@ -9,7 +9,9 @@
     elseif(Request::segment(3)=='all-orders') $url = route('common.all-orders');
 
     else $url = route('common.orders',$order_status->id);
-
+    if($order_status->id=='3'){
+        $searchBy = true;
+    }else $searchBy = false;
     // echo $url;
 @endphp
     <div class="row">
@@ -74,15 +76,19 @@
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
     $(document).ready(function () {
-        $(function () { table.ajax.reload(); });
-
+ 
         let table = $('.orderTable').DataTable({
             processing: true,serverSide: true,
             "language": { processing: '<img src="'+url+'/storage/images/ajax-loader.gif">'},
             ajax: "{{$url}}",
             order: [ [0, 'desc'] ],
             columns: [
-                {data: 'id', class:'ready2ship'},
+                @if($order_status->id=='3')
+                    {data: 'id', name:'id', class:'ready2ship', orderable: false, searchable:false},
+                @else  
+                    {data: 'id', name:'id', class:'ready2ship'},
+                @endif
+
                 {data: 'transaction_id', name: 'transaction_id'},
                 {data: 'product_info', orderable: false, searchable: false},
                 {data: 'customer_info', orderable: false, searchable: false},

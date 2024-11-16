@@ -37,12 +37,14 @@ class CheckoutController extends Controller
 
     function index(Request $request){
 
+        // dd($request->all());
         if(!$request->customer_id){
             // dd('no customer and billing shipping different');
             $this->billingFields();
         }
 
         if(!$request->customer_id && !$request->billing_shipping_same){
+            // dd('shipping address needed');
             $this->shippingFields();  
         }
 
@@ -50,6 +52,7 @@ class CheckoutController extends Controller
         if($request->customer_id && $request->billing_shipping_same){
             // dd('customer and billing shipping same');
             $customer = Customer::where('id',$request->customer_id)->first();
+          
             $billData =[
                 'division'=>$customer->division->name,
                 'district'=>$customer->district->name,
@@ -231,6 +234,7 @@ class CheckoutController extends Controller
         ];
 
         $orderData = array_merge($orderData, $billData, $shipData);
+        // dd($orderData);
         $order = Order::create($orderData);
 
 
@@ -259,6 +263,15 @@ class CheckoutController extends Controller
             if($productPromotion==null) $promotion_id = null;
             else $promotion_id = $productPromotion->promotion_id;
 
+            $salePrice = $cart->product->sale_price  * session()->get('user_currency')->currencyValue;
+            $disPrice = product_price($cart->product->id,$cart->product->sale_price);
+            $disPercent = ((($salePrice - $disPrice) / $salePrice) * 100);
+
+            if($promotion_id==null && $disPercent>0){
+                dd('Unable to create order! no promo setup but discount is available ', $cart);
+            }
+           
+
             Order_item::create([
                 'order_id'=>$order->id,	'campaign_id'=>$campaign_id, 
                 'promotion_id'=>$promotion_id,	
@@ -273,8 +286,8 @@ class CheckoutController extends Controller
 
                 
                 'net_price'=>$cart->product->net_price * session()->get('user_currency')->currencyValue,
-                'sale_price'=>$cart->product->sale_price  * session()->get('user_currency')->currencyValue,
-                'discount_price'=> product_price($cart->product->id,$cart->product->sale_price), 
+                'sale_price'=>$salePrice,
+                'discount_price'=> $disPrice, 
                 'vat'=>$cart->product->vat,
                 'vat_type'=>$cart->product->vat_type
             ]);
@@ -289,7 +302,7 @@ class CheckoutController extends Controller
 
         session()->forget('cart'); session()->forget('cartNum');session()->forget('outlet_customer');
         
-	//dd('working..');
+	    //dd('working..');
 
         $sms = new GPSMS();
         $messageForCustomer = 'Hello '.ucfirst($order->first_name.' '.$order->last_name).'! Your order has been placed successfully. Please visite '.route('order-info',$order->transaction_id);
@@ -502,6 +515,7 @@ class CheckoutController extends Controller
         ];
 
         $orderData = array_merge($orderData, $billData, $shipData);
+       
         $order = Order::create($orderData);
 
 
@@ -690,8 +704,6 @@ class CheckoutController extends Controller
     }
 
     private function shipping_address($request, $customer){
-
-        
         if($request->billing_shipping_same){
 
             $check = Shipping_address::where('phone',$request->phone);
@@ -710,7 +722,6 @@ class CheckoutController extends Controller
                 // ]);
                 return $check->first();
             }
-            
         }
         else{
             if($request->shipping_address_id){
