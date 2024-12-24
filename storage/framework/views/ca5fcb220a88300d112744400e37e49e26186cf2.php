@@ -1,7 +1,4 @@
-
-@extends('common.layouts')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -9,14 +6,14 @@
                 <div class="card-header-right">
                     <select name="category" id="searchWithCat" style="padding: 10px;" class="border border-info rounded">
                         <option value="">Choose group</option>
-                        @foreach ($categories as $group)
-                            <option value="{{ $group->id }}" @if(request()->get('group')==$group->id)selected @endif >{{ $group->title }}</option>
-                        @endforeach
+                        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($group->id); ?>" <?php if(request()->get('group')==$group->id): ?>selected <?php endif; ?> ><?php echo e($group->title); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                     <select name="sub_category" style="padding: 10px;" class="border border-info rounded"> </select>
 
-                    @if(check_access('create-sub-category')==true)
-                    <button type="button" class="btn btn-outline-primary addModal"><i class="feather icon-plus"></i> Add New</button>@endif
+                    <?php if(check_access('create-sub-category')==true): ?>
+                    <button type="button" class="btn btn-outline-primary addModal"><i class="feather icon-plus"></i> Add New</button><?php endif; ?>
                 </div>
             </div>
 
@@ -35,25 +32,25 @@
             </div>
         </div>
     </div>
-    @include('common.category.child.modal')
+    <?php echo $__env->make('common.category.child.modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@php
+<?php
     $innerGroup = request()->get('innerGroup');
     $url = '/common/catalog/category/child';
 
     if(request()->get('innerGroup')){
         $url = url('/common/catalog/category/child?innerGroup='.request()->get('innerGroup'));
     }
-@endphp
+?>
 
 
-@push('scripts')
-<link rel="stylesheet" href="{{ asset('back2') }}/plugins/data-tables/css/datatables.min.css">
-<script src="{{ asset('back2') }}/plugins/data-tables/js/datatables.min.js"></script>
-<script src="{{ asset('back2') }}/js/pages/tbl-datatable-custom.js"></script>
+<?php $__env->startPush('scripts'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('back2')); ?>/plugins/data-tables/css/datatables.min.css">
+<script src="<?php echo e(asset('back2')); ?>/plugins/data-tables/js/datatables.min.js"></script>
+<script src="<?php echo e(asset('back2')); ?>/js/pages/tbl-datatable-custom.js"></script>
 
 <script>
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -65,7 +62,7 @@
         let table = $('.childTable').DataTable({
             processing: true,serverSide: true,
             "language": { processing: '<img src="'+url+'/storage/images/ajax-loader.gif">'},
-            ajax: "{{ $url }}",
+            ajax: "<?php echo e($url); ?>",
             order: [ [0, 'desc'] ],
             columns: [
                 {data: 'id'},
@@ -237,7 +234,7 @@ if(request()->get('group')){  ?>
     
     <script>
         $("[name=sub_category]").append('<option value="">Sub-category</option>')
-        $.ajax({ url:"{{ url('/common/group2sub-categories/'.request()->get('group')) }}", method:"get",
+        $.ajax({ url:"<?php echo e(url('/common/group2sub-categories/'.request()->get('group'))); ?>", method:"get",
             success:function(data){
                 $.each(data, function(index, value){
                     $("[name=sub_category]").append('<option value="'+value.id+'">'+value.title+'</option>');
@@ -260,4 +257,6 @@ if(request()->get('group')){  ?>
       reader.readAsDataURL(event.target.files[0]);
     };
   </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('common.layouts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\mbrellabd-global\resources\views/common/category/child/index.blade.php ENDPATH**/ ?>

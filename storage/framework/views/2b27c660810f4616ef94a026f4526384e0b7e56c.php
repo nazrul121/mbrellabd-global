@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label for="recipient-name" class="col-form-label">Child-category Name</label>
+    <label for="recipient-name" class="col-form-label">Sub-category Name</label>
     <input type="text" class="form-control" name="title">
 </div>
 
@@ -10,16 +10,11 @@
 
 <div class="form-group">
     <label for="">Choose Main category</label>
-    <select class="form-control" id="cat" name="category">
-        <option value="">Choose Category</option>
-        @foreach ($categories as $cat)
-            <option value="{{ $cat->id }}">{{ $cat->title }}</option>
-        @endforeach
+    <select class="form-control" name="category">
+        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->title); ?></option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </select>
-</div>
-<div class="form-group">
-    <label for="">Choose Sub category</label>
-    <select class="form-control" name="sub_category" id="subCatFormField"> </select>
 </div>
 <div class="form-group">
     <div class="row">
@@ -42,15 +37,14 @@
     <textarea class="form-control" name="description" rows="5"></textarea>
 </div>
 
-
 <div class="form-group bg-light p-2">
     <p class="text-info">Country for--</p>
-    @foreach (get_currency() as $item)
+    <?php $__currentLoopData = get_currency(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <label class="form-label">
-            <input type="checkbox" class="position-relative lang" style="top:3px;" name="langs[]" value="{{$item->id}}"> <span></span>
-            <span> <img class="flag" style="height:10px;" src="{{ url($item->flag) }}"> {{$item->short_name}}</span>
+            <input type="checkbox" class="position-relative lang" style="top:3px;" name="langs[]" value="<?php echo e($item->id); ?>"> <span></span>
+            <span> <img class="flag" style="height:10px;" src="<?php echo e(url($item->flag)); ?>"> <?php echo e($item->short_name); ?></span>
         </label> &nbsp; &nbsp; 
-    @endforeach
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 </div>
 
 <div class="form-group">
@@ -63,3 +57,11 @@
         <span></span><span>Unpublished</span>
     </label>
 </div>
+
+<div class="form-group">
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox" name="is_top" class="custom-control-input is_top" >
+        <span class="custom-control-label">Set as top Category</span>
+    </label>
+</div>
+<?php /**PATH C:\laragon\www\mbrellabd-global\resources\views/common/category/sub/form.blade.php ENDPATH**/ ?>

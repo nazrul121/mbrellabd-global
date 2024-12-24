@@ -12,9 +12,9 @@
     <label for="">Choose Main category</label>
     <select class="form-control" id="cat" name="category">
         <option value="">Choose Category</option>
-        @foreach ($categories as $cat)
-            <option value="{{ $cat->id }}">{{ $cat->title }}</option>
-        @endforeach
+        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->title); ?></option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </select>
 </div>
 <div class="form-group">
@@ -45,12 +45,12 @@
 
 <div class="form-group bg-light p-2">
     <p class="text-info">Country for--</p>
-    @foreach (get_currency() as $item)
+    <?php $__currentLoopData = get_currency(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <label class="form-label">
-            <input type="checkbox" class="position-relative lang" style="top:3px;" name="langs[]" value="{{$item->id}}"> <span></span>
-            <span> <img class="flag" style="height:10px;" src="{{ url($item->flag) }}"> {{$item->short_name}}</span>
+            <input type="checkbox" class="position-relative lang" style="top:3px;" name="langs[]" value="<?php echo e($item->id); ?>"> <span></span>
+            <span> <img class="flag" style="height:10px;" src="<?php echo e(url($item->flag)); ?>"> <?php echo e($item->short_name); ?></span>
         </label> &nbsp; &nbsp; 
-    @endforeach
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 </div>
 
 <div class="form-group">
@@ -63,3 +63,4 @@
         <span></span><span>Unpublished</span>
     </label>
 </div>
+<?php /**PATH C:\laragon\www\mbrellabd-global\resources\views/common/category/child/form.blade.php ENDPATH**/ ?>

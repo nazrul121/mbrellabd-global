@@ -36,7 +36,7 @@ class CreateCountriesTable extends Migration
             'currencyValue'=>100.00,'currency_code'=>'UAD','zone'=>'5']);
             
         Country::create(['name'=>'Bangladesh','short_name'=>'BD','phone_code'=>'+88', 'flag'=>'storage/images/flag/bd.png', 'currencySymbol'=>'৳',
-            'currencyValue'=>1.00,'currency_code'=>'BDT']); 
+            'currencyValue'=>1.00,'currency_code'=>'BDT','is_default'=>'1']); 
        
     }
 

@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="no-js">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>" class="no-js">
 
 <head>
-    @stack('meta')
+    <?php echo $__env->yieldPushContent('meta'); ?>
     
-    @include('includes.head')
+    <?php echo $__env->make('includes.head', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     
-    <link rel="preload" href="{{asset('assets/fonts/powerkit-icons.woff')}}" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="<?php echo e(asset('assets/fonts/powerkit-icons.woff')); ?>" as="font" type="font/woff" crossorigin />
     
-    @stack('style')
+    <?php echo $__env->yieldPushContent('style'); ?>
 </head>
 
 <body style="flex-direction: column; display: contents;">
@@ -44,19 +44,19 @@
 
     <div class="body-wrapper">
 
-        {{-- {{ __('auth.failed') }} --}}
+        
         
         <!-- top header start -->
-        @include('includes.top-header')
+        <?php echo $__env->make('includes.top-header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         
         <!-- header start -->
-        @include('includes.header')
+        <?php echo $__env->make('includes.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
         <main id="MainContent" class="content-for-layout">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </main>
 
-		@include('includes.footer')
+		<?php echo $__env->make('includes.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
         
 
         <!-- scrollup start -->
@@ -65,12 +65,12 @@
         </button>
 		
         <!-- drawer menu start (mobile menu) -->
-        @include('includes.mobile_nav')
+        <?php echo $__env->make('includes.mobile_nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
         <!-- drawer cart start -->
         <div class="offcanvas offcanvas-end" tabindex="-1" id="drawer-cart">
             <div class="offcanvas-header border-btm-black">
-                <h5 class="cart-drawer-heading text_16">Your Cart ( <span class="addToCardNum"> @if(Session::has('cart')) {{Session::get('cart')->where('country_id',session('user_currency')->id)->count()}} @else 0 @endif </span> )</h5>
+                <h5 class="cart-drawer-heading text_16">Your Cart ( <span class="addToCardNum"> <?php if(Session::has('cart')): ?> <?php echo e(Session::get('cart')->where('country_id',session('user_currency')->id)->count()); ?> <?php else: ?> 0 <?php endif; ?> </span> )</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body p-0 ajaxCard"> </div>
@@ -88,15 +88,15 @@
         </div>
         
         
-        <input type="hidden" id="url" value="{{url('/')}}">
+        <input type="hidden" id="url" value="<?php echo e(url('/')); ?>">
         <div id="notice">.......</div>
 
         <!-- all js -->
-        <script src="{{asset('/assets/js/vendor.js')}}"></script>
-        <script src="{{asset('/assets/js/main.js')}}"></script>
+        <script src="<?php echo e(asset('/assets/js/vendor.js')); ?>"></script>
+        <script src="<?php echo e(asset('/assets/js/main.js')); ?>"></script>
 		
-		<link rel="stylesheet" href="{{asset('/assets/searchUI/jquery-ui.css')}}">
-		<script src="{{asset('/assets/searchUI/jquery-ui.js')}}"></script>
+		<link rel="stylesheet" href="<?php echo e(asset('/assets/searchUI/jquery-ui.css')); ?>">
+		<script src="<?php echo e(asset('/assets/searchUI/jquery-ui.js')); ?>"></script>
 		
 		<script>
 
@@ -106,7 +106,7 @@
 	
 
             $('#searchProduct').autocomplete({
-                source: "{{ route('autocomplete-search',app()->getLocale()) }}",
+                source: "<?php echo e(route('autocomplete-search',app()->getLocale())); ?>",
                 minLength: 1,
                 select: function(event, ui){
                     $('#searchProduct').val(ui.item.value);
@@ -121,7 +121,7 @@
             $('.search-form').on('keydown', function(event) {
                 if (event.keyCode == 13) {
                     let keyword = $('#searchProduct').val();
-                    window.open(url+"/{{ app()->getLocale() }}/products?keyword="+keyword);
+                    window.open(url+"/<?php echo e(app()->getLocale()); ?>/products?keyword="+keyword);
                 }
             });
             
@@ -131,7 +131,7 @@
                 $(".quickViewModal" ).html( 'Working....' );
                 var id = $(this).data('product_id');
                 // window.open(url + "/modal-product/"+id);
-                $.get( url + "/{{app()->getLocale()}}/modal-product/"+id, function( data ) {
+                $.get( url + "/<?php echo e(app()->getLocale()); ?>/modal-product/"+id, function( data ) {
                     $( ".quickViewModal" ).html( data );
                 });
                 set_modal_background();
@@ -196,12 +196,12 @@
                     $('#quickview-modal').modal('show');
                     $(".quickViewModal" ).html( 'Working....' );
                     
-                    $.get( url + "/{{ app()->getLocale() }}/modal-product/"+id, function( data ) {
+                    $.get( url + "/<?php echo e(app()->getLocale()); ?>/modal-product/"+id, function( data ) {
                         $( ".quickViewModal" ).html( data );
                     });
                     set_modal_background();
                 }else{
-                    $.get(url + "/{{ app()->getLocale() }}/add-to-cart?qty=1&id="+id, function(data, status){
+                    $.get(url + "/<?php echo e(app()->getLocale()); ?>/add-to-cart?qty=1&id="+id, function(data, status){
                         if(data[1]=='success') {
                             $('#notice').fadeIn('slow');
                             $('#notice').html('&#10003; The item added to wishlist successfully!!');
@@ -232,7 +232,7 @@
 
 		</script>
         
-        @stack('scripts')
+        <?php echo $__env->yieldPushContent('scripts'); ?>
 
     </div>
     
@@ -258,4 +258,4 @@
 
 </body>
 
-</html>
+</html><?php /**PATH C:\laragon\www\mbrellabd-global\resources\views/layouts/app.blade.php ENDPATH**/ ?>

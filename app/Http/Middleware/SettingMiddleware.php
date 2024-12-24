@@ -45,6 +45,7 @@ class SettingMiddleware
 
         // default currency
         if (!session()->has('user_currency') ) {
+            
             $currency = \App\Models\Country::select(['id','name','short_name','short_code','currency_code','phone_code','flag','currencySymbol','currencyValue','zone'])->where('is_default','1')->first();
             session()->put('user_currency',$currency);
         }

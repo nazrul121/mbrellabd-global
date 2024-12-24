@@ -10,7 +10,7 @@
         "ashallendesign/laravel-exchange-rates": "^4.1",
         "barryvdh/laravel-dompdf": "^2.0",
         "dgvai/laravel-sslcommerz": "^1.0",
-        "dymantic/laravel-instagram-feed": "^3.3",
+        "dymantic/laravel-instagram-feed": "^2.6",
         "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.4",
         "intervention/image": "^2.7",
